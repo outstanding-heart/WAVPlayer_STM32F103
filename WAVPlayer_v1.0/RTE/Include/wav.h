@@ -60,13 +60,14 @@ typedef struct
 uint32_t Flash_Read_Choose_Wav_Num(uint32_t StartAddr, uint32_t Num, uint32_t BitNum);
 void Flash_Read_Choose_Wav_Info(uint8_t *Info, uint32_t StartAddr, uint32_t Num, uint32_t BitNum);
 void PrintWavHeader(WavHeader wavheader);
-uint32_t Wav_Init(WavHeader *wavheader, uint32_t StartAddr);
-void Play_Wav(WavHeader wavheader, uint32_t address);
+//uint32_t Wav_Init(WavHeader *wavheader, uint32_t StartAddr);
+//void Play_Wav(WavHeader wavheader, uint32_t address);
 void Time_Init(WavHeader wavheader);
-void Wav_Config(WavHeader *wavheader);
+//void Wav_Config(WavHeader *wavheader);
 
 void WavPlay(WavHeader *wavheader, char *Apath);
-void WavPlayInit(WavHeader *wavheader);
+void WavHeaderInit(WavHeader *wavheader);
+void WavPlayConfig(WavHeader *wavheader, char *Apath);
 void WAV_Info(uint8_t *Info, uint32_t Addr, uint32_t Num);
 uint32_t WAV_Num(uint32_t Addr, uint32_t Byte);
 

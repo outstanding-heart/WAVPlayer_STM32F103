@@ -7,13 +7,14 @@
 ".\wavsd.o"
 ".\fatfs.o"
 ".\key.o"
+".\irqserver.o"
 ".\stm3210e_eval.o"
 ".\stm3210e_eval_sdio_sd.o"
 ".\ff.o"
 ".\diskio.o"
 ".\syscall.o"
 ".\cc936.o"
-"..\..\MDK5.11\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS_RTX\LIB\ARM\RTX_CM3.lib"
+"..\..\..\MDK5.11\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS_RTX\LIB\ARM\RTX_CM3.lib"
 ".\rtx_conf_cm.o"
 ".\misc.o"
 ".\stm32f10x_adc.o"
@@ -29,7 +30,7 @@
 ".\stm32f10x_usart.o"
 ".\startup_stm32f10x_hd.o"
 ".\system_stm32f10x.o"
---strict --scatter ".\WAV_Player.sct"
+--library_type=microlib --strict --scatter ".\WAV_Player.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\WAV_Player.map" -o .\WAV_Player.axf

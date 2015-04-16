@@ -27,6 +27,11 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 #define SD_OPERATION_MULTI_BLOCK    2 
 #define SD_OPERATION_END            3
 
+#define Setted 3							//刚打完
+#define Setting 2							//正在打
+#define Set 1								//上好膛
+#define Noset 0								//未上膛
+
 
 /* Exported types ------------------------------------------------------------*/
 typedef struct
@@ -80,6 +85,13 @@ void EXTI_LastNext_Config(void);
 void EXTI_Volume_Config(void);
 void EXTI_PlayOrWait_Config(void);
 void EXTI_Stop_Config(void);
+
+void Volume_Sub(void);
+void Volume_Add(void);
+void Next_Music(void);
+void Last_Music(void);
+void Play_Wait(void);
+void Stop_Key(void);
 
 #endif /* __MAIN_H */
 

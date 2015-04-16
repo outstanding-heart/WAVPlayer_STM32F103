@@ -5,8 +5,8 @@
 #include "wav.h"
 
 /* Private variables ---------------------------------------------------------*/
-uint32_t PlayIRQBuffer;			//串口1缓存值
-uint32_t Tim3IRQBuffer;
+uint32_t PlayIRQBuffer;						//串口1缓存值
+int volume;
 
 FATFS fs;									//记录文件系统盘符信息的结构体
 int Chose;									//所选的ID
@@ -19,12 +19,12 @@ int main(void)
 	
 	char string[NumStrMax];
 
-//	int i;
 	WavHeader wavheader;
 	PlayList Playlist;
 
 	PlayIRQBuffer = Noset;
 	Chose = 0;										//默认选择播放第一首歌
+	volume = 3;
 	
 	USART1_Init();
 	SerialPutString("\nUsart init!\n");
@@ -48,9 +48,6 @@ int main(void)
 	{
 		if (PlayIRQBuffer == Set)
 		{	
-			ShowAllFile(&Playlist);	
-			sprintf(string, "%d\n", Set);
-			SerialPutString(string);
 			EXTI_Volume_Config();
 			EXTI_PlayOrWait_Config();
 			EXTI_Stop_Config();
@@ -59,13 +56,11 @@ int main(void)
 			Name = Playlist.File[Chose].Name;
 			sprintf(string ,"This music is: %s" ,Name);
 			SerialPutString(string);
-			
-			//SerialPutString("Recive!\n");
 
 			//PrintList(PlayList);
 			WavPlay(&wavheader, Apath);				//播放文件
 			
-			
+			ShowAllFile(&Playlist);	
 			
 		}
 	}
@@ -99,14 +94,5 @@ void USART1_IRQHandler(void)
 	}
 }
 
-/* Wake up 播放键中断服务函数 */
-void EXTI0_IRQHandler(void)
-{
-	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
-	{
-		SerialPutString("播放\n");
-		PlayIRQBuffer = Set; 
-		EXTI_ClearITPendingBit(EXTI_Line0);
-	}
-}
+
 

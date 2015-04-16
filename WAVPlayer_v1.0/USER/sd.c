@@ -25,58 +25,58 @@ TestStatus eBuffercmp(uint8_t* pBuffer, uint32_t BufferLength);
   * @param  None
   * @retval None
   */
-//void SD_Config(void)
-//{
-//	//char string[NumStrMax];
-//	
-//	NVIC_Configuration();
-//	Status = SD_Init();
-//	
-//	if (Status == SD_OK)
-//	{
-//		SerialPutString("SD_Init OK!\n");
-//	}
-//	else
-//	{
-//		SerialPutString("SD_Init Fail");
-//	}
-//	
-//	//PrintCardType();
-//	
-//	while((Status == SD_OK) && (SDCardOperation != SD_OPERATION_END) && (SD_Detect()== SD_PRESENT))
-//	{
-//		switch(SDCardOperation)
-//		{
-//			/*-------------------------- SD Erase Test ---------------------------- */
-//			case (SD_OPERATION_ERASE):
-//			{
-//				SerialPutString("Into Erase!\n");
-//				SD_EraseTest();
-//				SDCardOperation = SD_OPERATION_BLOCK;
-//				SerialPutString("Erase OK!\n");
-//				break;
-//			}
-//			/*-------------------------- SD Single Block Test --------------------- */
-//			case (SD_OPERATION_BLOCK):
-//			{
-//				SerialPutString("Into Single\n");
-//				SD_SingleBlockTest();
-//				SDCardOperation = SD_OPERATION_MULTI_BLOCK;
-//				SerialPutString("Single OK!\n");
-//				break;
-//			}       
-//			/*-------------------------- SD Multi Blocks Test --------------------- */
-//			case (SD_OPERATION_MULTI_BLOCK):
-//			{
-//				SerialPutString("Into Multi!\n");
-//				SD_MultiBlockTest();
-//				SDCardOperation = SD_OPERATION_END;
-//				SerialPutString("Multi OK!\n");
-//				break;
-//			}              
-//		}
-//	}
-//}
+void SD_Config(void)
+{
+	//char string[NumStrMax];
+	
+	NVIC_Configuration();
+	Status = SD_Init();
+	
+	if (Status == SD_OK)
+	{
+		SerialPutString("SD_Init OK!\n");
+	}
+	else
+	{
+		SerialPutString("SD_Init Fail");
+	}
+	
+	//PrintCardType();
+	
+	while((Status == SD_OK) && (SDCardOperation != SD_OPERATION_END) && (SD_Detect()== SD_PRESENT))
+	{
+		switch(SDCardOperation)
+		{
+			/*-------------------------- SD Erase Test ---------------------------- */
+			case (SD_OPERATION_ERASE):
+			{
+				SerialPutString("Into Erase!\n");
+				SD_EraseTest();
+				SDCardOperation = SD_OPERATION_BLOCK;
+				SerialPutString("Erase OK!\n");
+				break;
+			}
+			/*-------------------------- SD Single Block Test --------------------- */
+			case (SD_OPERATION_BLOCK):
+			{
+				SerialPutString("Into Single\n");
+				SD_SingleBlockTest();
+				SDCardOperation = SD_OPERATION_MULTI_BLOCK;
+				SerialPutString("Single OK!\n");
+				break;
+			}       
+			/*-------------------------- SD Multi Blocks Test --------------------- */
+			case (SD_OPERATION_MULTI_BLOCK):
+			{
+				SerialPutString("Into Multi!\n");
+				SD_MultiBlockTest();
+				SDCardOperation = SD_OPERATION_END;
+				SerialPutString("Multi OK!\n");
+				break;
+			}              
+		}
+	}
+}
 
 /**
   * @brief  Configures SDIO IRQ channel.

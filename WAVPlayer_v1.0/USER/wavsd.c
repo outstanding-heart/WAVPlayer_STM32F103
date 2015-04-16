@@ -19,18 +19,24 @@ uint32_t address;							//相对数据地址位
 WavHeader Nowwavheader;
 uint32_t DACdone;
 
-uint32_t volme;								//音量控制
 uint32_t PlayOrWait;						//播放/暂停
 
+extern int volume;								//音量控制
 extern int Chose;
 extern int Number;
+
+extern uint32_t VolumeSub;
+extern uint32_t VolumeAdd;
+extern uint32_t NextMusic;
+extern uint32_t LastMusic;
+extern uint32_t PlayWait;
+extern uint32_t StopKey;
 extern uint32_t PlayIRQBuffer;
 
 /* Init wav file which from SD ------------------------------------------------*/
-void WavPlayInit(WavHeader *wavheader)
+void WavHeaderInit(WavHeader *wavheader)
 {
 	uint32_t Addr = 0;
-	volme = 3;
 
 	//RIFF
 	SerialPutString("\n");
@@ -210,33 +216,62 @@ void Time_Init(WavHeader wavheader)
 	
 }
 
-
-
-/* Play music ----------------------------------------------------------------*/
-void WavPlay(WavHeader *wavheader, char *Apath)
-{	
-	char string[NumStrMax];
+/* Config WavPlayer */
+void WavPlayConfig(WavHeader *wavheader, char *Apath)
+{
 	uint32_t i;
-
+	char *RIFF = "RIFF\0", *WAVE = "WAVE\0", *fmt = "fmt \0", *data = "data\0";
+	
 	/**************************************/
+	VolumeSub = Noset;
+	VolumeAdd = Noset;
+	NextMusic = Noset;
+	LastMusic = Noset;
+	PlayWait = Noset;
+	StopKey = Noset;
+	
 	NVIC_Configuration();
 	
 	//SerialPutString(Apath);
 	res = f_open(&fdst, Apath, FA_OPEN_EXISTING | FA_READ);
 	//打开文件
 	br = 1;
-	//a = 0;
 
-	/* Init */
 	res = f_read(&fdst, header, sizeof(header), &br);
 
-	WavPlayInit(wavheader);
+	WavHeaderInit(wavheader);
 	//PrintWavHeader(*wavheader);
 	
-
+	if(strcmp((*wavheader).riffheader.szRiffID, RIFF) != 0)			//检测RIFF标志
+	{
+		SerialPutString("RIFF error!");
+		while(1)
+		{}
+	}
+	
+	if(strcmp((*wavheader).riffheader.szRiffFormat, WAVE) != 0)		//检测WAVE标志
+	{
+		SerialPutString("WAVE error!");
+		while(1)
+		{}
+	}
+	
+	if(strcmp((*wavheader).pcmwaveformat.szFmtID, fmt) != 0)		//检测fmt标志
+	{
+		SerialPutString("fmt error!");
+		while(1)
+		{}
+	}
+	
+	if(strcmp((*wavheader).datablack.szDataID, data) != 0)			//检测data标志
+	{
+		SerialPutString("data error!");
+		while(1)
+		{}
+	}
+	
 	DataAddress = 0;
 	address = 0;
-	
 
 	for(i=0; i<BuffMax; i++)
 	{
@@ -247,14 +282,21 @@ void WavPlay(WavHeader *wavheader, char *Apath)
 	Buff_1.Read = Noset;
 	Buff_2.Read = Noset;
 
+}
+
+/* Play music ----------------------------------------------------------------*/
+void WavPlay(WavHeader *wavheader, char *Apath)
+{	
+	char string[NumStrMax];
+	uint32_t i;
+
+	/* Init */
+	WavPlayConfig(wavheader, Apath);
 	/* Play */
-	//SerialPutString("~1~\n");
 	res = f_read(&fdst, Buff_1.Data, sizeof(Buff_1.Data), &br);		//将文件里面的内容读到缓冲区1
 	Buff_1.Read = Set;
-	//SerialPutString("~2~\n");
 	res = f_read(&fdst, Buff_2.Data, sizeof(Buff_2.Data), &br);		//将文件里面的内容读到缓冲区2
 	Buff_2.Read = Set;
-	//SerialPutString("~3~\n");
 	Buff_1.Read = Setting;
 	Buff = Buff_1.Data;
 
@@ -266,7 +308,7 @@ void WavPlay(WavHeader *wavheader, char *Apath)
 		
 		for(;DataAddress < Nowwavheader.datablack.dwDataSize;)
 		{	
-			//while(DACdone == 0);
+
 			if(DACdone == 1)							//一个簇的数据已通过DAC读完，换下一个簇读取
 			{
 
@@ -319,13 +361,21 @@ void WavPlay(WavHeader *wavheader, char *Apath)
 					}
 					
 					Buff_2.Read = Set;
-					//SerialPutString("\nRead Buff_2!\n");
 				}
 			}
 			else if(DACdone == 2)											//结束播放，跳出循环
 			{
 				break;
 			}
+			
+			/* 键盘操作部分 ******************************************************/
+			if(VolumeSub == Set) Volume_Sub();					//音量减
+			if(VolumeAdd == Set) Volume_Add();					//音量加
+			if(NextMusic == Set) Next_Music();					//下一首
+			if(LastMusic == Set) Last_Music();					//上一首
+			if(PlayWait == Set) Play_Wait();					//暂停/继续播放
+			if(StopKey == Set) Stop_Key();						//停止
+
 		}
 		
 		for(i=0; i<BuffMax; i++)											//双缓存清零
@@ -333,7 +383,7 @@ void WavPlay(WavHeader *wavheader, char *Apath)
 			Buff_1.Data[i] = 0;
 			Buff_2.Data[i] = 0;
 		}
-		//SerialPutString("\nRead Ok!\n");
+		SerialPutString("\nRead Ok!\n");
 		f_close(&fdst);
 		
 	}
@@ -358,8 +408,8 @@ void TIM3_IRQHandler()
 				{
 					Data = Buff[address];
 
-					DAC_SetChannel1Data(DAC_Align_12b_R, Data/volme);
-					DAC_SetChannel2Data(DAC_Align_12b_R, Data/volme);
+					DAC_SetChannel1Data(DAC_Align_12b_R, Data/volume);
+					DAC_SetChannel2Data(DAC_Align_12b_R, Data/volume);
 					
 					DataAddress = DataAddress + Bit_1;
 					address = address + Bit_1;
@@ -371,8 +421,8 @@ void TIM3_IRQHandler()
 					data = Data+(1<<15) ;
 					data = data>>4;
 					
-					DAC_SetChannel1Data(DAC_Align_12b_L, data/volme);
-					DAC_SetChannel2Data(DAC_Align_12b_L, data/volme);
+					DAC_SetChannel1Data(DAC_Align_12b_L, data/volume);
+					DAC_SetChannel2Data(DAC_Align_12b_L, data/volume);
 
 					DataAddress = DataAddress + Bit_2;
 					address = address + Bit_2;
@@ -389,12 +439,12 @@ void TIM3_IRQHandler()
 				if(Nowwavheader.pcmwaveformat.wf.wBitsPerSample == 8)		//立体声八位
 				{
 					Data = Buff[address];				
-					DAC_SetChannel1Data(DAC_Align_12b_R, Data/volme);
+					DAC_SetChannel1Data(DAC_Align_12b_R, Data/volume);
 					DataAddress = DataAddress + Bit_1;
 					address = address + Bit_1;
 					
 					Data = Buff[address];
-					DAC_SetChannel2Data(DAC_Align_12b_R, Data/volme);
+					DAC_SetChannel2Data(DAC_Align_12b_R, Data/volume);
 					DataAddress = DataAddress + Bit_1;
 					address = address + Bit_1;
 				}
@@ -403,14 +453,14 @@ void TIM3_IRQHandler()
 					Data = (Buff[address+1]<<8) | Buff[address];
 					data = Data+(1<<15) ;
 					data = data>>4;
-					DAC_SetChannel1Data(DAC_Align_12b_L, data/volme);
+					DAC_SetChannel1Data(DAC_Align_12b_L, data/volume);
 					DataAddress = DataAddress + Bit_2;
 					address = address + Bit_2;
 					
 					Data = (Buff[address+1]<<8) | Buff[address];
 					data = Data+(1<<15) ;
 					data = data>>4;
-					DAC_SetChannel2Data(DAC_Align_12b_L, data/volme);
+					DAC_SetChannel2Data(DAC_Align_12b_L, data/volume);
 					DataAddress = DataAddress + Bit_2;
 					address = address + Bit_2;
 				}
@@ -449,6 +499,7 @@ void TIM3_IRQHandler()
 		SerialPutString("Play end\n");
 		DACdone = 2;
 		address = 0;		
+		Next_Music();								//播放下一首
 	}
 }
 
@@ -456,15 +507,10 @@ void TIM3_IRQHandler()
 /* 音量控制 */
 void EXTI3_IRQHandler(void)
 {
-	if(EXTI_GetITStatus(EXTI_Line3) != RESET)
+
+	if(EXTI_GetITStatus(EXTI_Line3) != RESET)			//音量减
 	{
-		//SerialPutString("volme--\n");
-		if (volme < 8)
-		{
-			volme++;
-			SerialPutString("音量 -\n");
-			
-		}			
+		VolumeSub = Set;
 		EXTI_ClearITPendingBit(EXTI_Line3);
 	}	
 }
@@ -472,102 +518,55 @@ void EXTI3_IRQHandler(void)
 
 void EXTI15_10_IRQHandler(void)
 {	
-	char string[NumStrMax];
-	
-	if(EXTI_GetITStatus(EXTI_Line15) != RESET)
+
+	if(EXTI_GetITStatus(EXTI_Line15) != RESET)			//音量加
 	{
-		//SerialPutString("volme++\n");
-		if (volme > 1)
-		{
-			volme--;
-			SerialPutString("音量 +\n");
-			
-		}	
+		VolumeAdd = Set;
 		EXTI_ClearITPendingBit(EXTI_Line15);		
 	}	
 	
-	if(EXTI_GetITStatus(EXTI_Line13) != RESET)
+	if(EXTI_GetITStatus(EXTI_Line13) != RESET)			//下一首歌
 	{
-		/* 停止当前播放 */
-		DACdone = 2;
-		TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
-			
-		if(Chose < (Number-1))
-		{
-			Chose++;
-		}
-		else if(Chose == (Number-1))					//读到播放列表中最后一首歌，返回第一首歌
-		{
-			SerialPutString("已到最后一首，将跳转至第一首歌\n");
-			Chose = 0;
-		}
-		else
-		{
-			SerialPutString("Chose Error!\n");
-		}
-		sprintf(string, "%d\n" ,Chose);
-		SerialPutString(string);
-		SerialPutString("下一曲\n");
-		/* 播放下一曲 */
-		PlayIRQBuffer = Set; 
+		NextMusic = Set;
 		EXTI_ClearITPendingBit(EXTI_Line13);
 	}
 		
-	if(EXTI_GetITStatus(EXTI_Line14) != RESET)
+	if(EXTI_GetITStatus(EXTI_Line14) != RESET)			//上一首歌
 	{
-		/* 停止当前播放 */
-		DACdone = 2;
-		TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
-		
-		if(Chose > 0)
-		{
-			Chose--;
-		}
-		else if(Chose == 0)
-		{
-			SerialPutString("已到第一首，将跳转至最后一首歌\n");
-			Chose = Number - 1;
-		}
-		sprintf(string, "%d\n" ,Chose);
-		SerialPutString(string);
-		SerialPutString("上一曲\n");
-		/* 播放下一曲 */
-		PlayIRQBuffer = Set; 
+		LastMusic = Set;
 		EXTI_ClearITPendingBit(EXTI_Line14);
 	}
 }
 
-/* 播放/暂停/停止 ------------------------------------------------- */
+/* 继续播放/暂停/停止 ------------------------------------------------- */
 void EXTI9_5_IRQHandler(void)
 {
-	if((EXTI_GetITStatus(EXTI_Line7) != RESET) && (DACdone != 2))
+	
+	if(EXTI_GetITStatus(EXTI_Line7) != RESET)			//继续播放/暂停
 	{
-		//SerialPutString("key\n");
-		if(PlayOrWait == Set)
-		{
-			TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
-			PlayOrWait = Noset;
-			SerialPutString("暂停\n");
-		}
-		else if(PlayOrWait == Noset)
-		{
-			TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-			PlayOrWait = Set;
-			SerialPutString("继续播放\n");
-		}
-		
-		EXTI_ClearITPendingBit(EXTI_Line7);
-		
+		PlayWait = Set;
+		EXTI_ClearITPendingBit(EXTI_Line7);		
 	}
 	
-	if((EXTI_GetITStatus(EXTI_Line8) != RESET) && (DACdone != 2))
+	if(EXTI_GetITStatus(EXTI_Line8) != RESET)			//停止
 	{
-		SerialPutString("停止\n");
-		DACdone = 2;
-		PlayIRQBuffer = Noset;
-		TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
-	
+		StopKey = Set;
 		EXTI_ClearITPendingBit(EXTI_Line8);
 	}
 }
 
+
+/* Wake up 播放键中断服务函数 */
+void EXTI0_IRQHandler(void)
+{
+	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
+	{
+		if(PlayIRQBuffer == Noset)
+		{
+			SerialPutString("播放\n");
+			PlayIRQBuffer = Set; 	
+		}
+		
+	}
+	EXTI_ClearITPendingBit(EXTI_Line0);
+}
