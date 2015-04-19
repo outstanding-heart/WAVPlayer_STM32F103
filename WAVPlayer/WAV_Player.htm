@@ -3,9 +3,9 @@
 <title>Static Call Graph - [.\WAV_Player.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\WAV_Player.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5040049: Last Updated: Thu Apr 16 16:06:51 2015
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5040049: Last Updated: Fri Apr 17 15:48:02 2015
 <BR><P>
-<H3>Maximum Stack Usage =      18248 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =      34696 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 main &rArr; WavPlay &rArr; WavPlayConfig &rArr; f_open &rArr; dir_register &rArr; dir_find &rArr; dir_next &rArr; create_chain &rArr; put_fat &rArr; move_window &rArr; disk_write &rArr; SD_WriteMultiBlocks &rArr; SD_LowLevel_DMA_TxConfig &rArr; DMA_Init
 <P>
@@ -181,8 +181,8 @@ Global Symbols
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_systick
 </UL>
 
-<P><STRONG><a name="[0]"></a>main</STRONG> (Thumb, 300 bytes, Stack size 17664 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 18248<LI>Call Chain = main &rArr; WavPlay &rArr; WavPlayConfig &rArr; f_open &rArr; dir_register &rArr; dir_find &rArr; dir_next &rArr; create_chain &rArr; put_fat &rArr; move_window &rArr; disk_write &rArr; SD_WriteMultiBlocks &rArr; SD_LowLevel_DMA_TxConfig &rArr; DMA_Init
+<P><STRONG><a name="[0]"></a>main</STRONG> (Thumb, 300 bytes, Stack size 34048 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 34696<LI>Call Chain = main &rArr; WavPlay &rArr; WavPlayConfig &rArr; f_open &rArr; dir_register &rArr; dir_find &rArr; dir_next &rArr; create_chain &rArr; put_fat &rArr; move_window &rArr; disk_write &rArr; SD_WriteMultiBlocks &rArr; SD_LowLevel_DMA_TxConfig &rArr; DMA_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;f_mount
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WavPlay
@@ -200,8 +200,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rtx_conf_cm.o(.data)
 </UL>
-<P><STRONG><a name="[30]"></a>USART1_IRQHandler</STRONG> (Thumb, 88 bytes, Stack size 72 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = USART1_IRQHandler &rArr; __2sprintf
+<P><STRONG><a name="[30]"></a>USART1_IRQHandler</STRONG> (Thumb, 88 bytes, Stack size 136 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = USART1_IRQHandler &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
@@ -264,7 +264,7 @@ Global Symbols
 <LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7b]"></a>DAC1_Init</STRONG> (Thumb, 146 bytes, Stack size 40 bytes, dac.o(.text))
+<P><STRONG><a name="[7b]"></a>DAC1_Init</STRONG> (Thumb, 144 bytes, Stack size 40 bytes, dac.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = DAC1_Init &rArr; GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TimeBaseStructInit
@@ -386,7 +386,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WavPlayConfig
 </UL>
 
-<P><STRONG><a name="[9b]"></a>PrintWavHeader</STRONG> (Thumb, 274 bytes, Stack size 88 bytes, wavsd.o(.text), UNUSED)
+<P><STRONG><a name="[9b]"></a>PrintWavHeader</STRONG> (Thumb, 280 bytes, Stack size 152 bytes, wavsd.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Serial_PutString
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 </UL>
@@ -417,8 +417,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WavPlay
 </UL>
 
-<P><STRONG><a name="[6d]"></a>WavPlay</STRONG> (Thumb, 894 bytes, Stack size 136 bytes, wavsd.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 584<LI>Call Chain = WavPlay &rArr; WavPlayConfig &rArr; f_open &rArr; dir_register &rArr; dir_find &rArr; dir_next &rArr; create_chain &rArr; put_fat &rArr; move_window &rArr; disk_write &rArr; SD_WriteMultiBlocks &rArr; SD_LowLevel_DMA_TxConfig &rArr; DMA_Init
+<P><STRONG><a name="[6d]"></a>WavPlay</STRONG> (Thumb, 888 bytes, Stack size 200 bytes, wavsd.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 648<LI>Call Chain = WavPlay &rArr; WavPlayConfig &rArr; f_open &rArr; dir_register &rArr; dir_find &rArr; dir_next &rArr; create_chain &rArr; put_fat &rArr; move_window &rArr; disk_write &rArr; SD_WriteMultiBlocks &rArr; SD_LowLevel_DMA_TxConfig &rArr; DMA_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;f_read
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;f_close
@@ -438,7 +438,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[28]"></a>TIM3_IRQHandler</STRONG> (Thumb, 590 bytes, Stack size 16 bytes, wavsd.o(.text))
+<P><STRONG><a name="[28]"></a>TIM3_IRQHandler</STRONG> (Thumb, 778 bytes, Stack size 16 bytes, wavsd.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = TIM3_IRQHandler &rArr; Next_Music &rArr; Serial_PutString &rArr; SerialPutChar
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ITConfig
@@ -459,7 +459,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[33]"></a>EXTI15_10_IRQHandler</STRONG> (Thumb, 260 bytes, Stack size 8 bytes, wavsd.o(.text))
+<P><STRONG><a name="[33]"></a>EXTI15_10_IRQHandler</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, wavsd.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = EXTI15_10_IRQHandler
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI_GetITStatus
@@ -484,8 +484,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[68]"></a>PrintList</STRONG> (Thumb, 112 bytes, Stack size 96 bytes, fatfs.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = PrintList &rArr; __2sprintf
+<P><STRONG><a name="[68]"></a>PrintList</STRONG> (Thumb, 112 bytes, Stack size 160 bytes, fatfs.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = PrintList &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Serial_PutString
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
@@ -967,7 +967,7 @@ Global Symbols
 
 <P><STRONG><a name="[181]"></a>convert_from_bytes_to_power_of_two</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, stm3210e_eval_sdio_sd.o(.text), UNUSED)
 
-<P><STRONG><a name="[ee]"></a>PrintCardType</STRONG> (Thumb, 108 bytes, Stack size 80 bytes, stm3210e_eval_sdio_sd.o(.text), UNUSED)
+<P><STRONG><a name="[ee]"></a>PrintCardType</STRONG> (Thumb, 108 bytes, Stack size 144 bytes, stm3210e_eval_sdio_sd.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Serial_PutString
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 </UL>

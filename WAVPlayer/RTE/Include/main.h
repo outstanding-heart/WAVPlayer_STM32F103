@@ -13,7 +13,7 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 
 /* Private define ------------------------------------------------------------*/
 #define SerialPutString(x)   Serial_PutString((uint8_t*)(x))
-#define NumStrMax					64
+#define NumStrMax					128
 #define NumFileMax					64
 
 /* Private define ------------------------------------------------------------*/

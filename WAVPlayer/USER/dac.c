@@ -11,31 +11,31 @@ void DAC1_Init(void)
 	
 	/* TIM2 Base Configuration */
 	/* TIM2 Periph clock enable */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
 	/* Time base configuration */
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure); 
 	TIM_TimeBaseStructure.TIM_Period = 0xFF;          
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x0;       
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure);
 	/* TIM2 TRGO selection */
-	TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);
+	TIM_SelectOutputTrigger(TIM6, TIM_TRGOSource_Update);
 	/* TIM2 enable counter */
-	TIM_Cmd(TIM2, ENABLE);
+	TIM_Cmd(TIM6, ENABLE);
 
 
 	/* Enable GPIOA clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	/* Configure PA.04 (DAC_OUT1) in analog mode */
+	/* Configure PA.04 (DAC_OUT1) in analog mode */ 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	/* Enable DAC clock */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
 	/* DAC channel1 Configuration */
-	DAC_InitStructure.DAC_Trigger = DAC_Trigger_T2_TRGO;
+	DAC_InitStructure.DAC_Trigger = DAC_Trigger_T6_TRGO;
 	//DAC_InitStructure.DAC_Trigger = DAC_Trigger_Software;
 	DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
 	DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_LFSRUnmask_Bit0;
